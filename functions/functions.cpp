@@ -7,6 +7,7 @@
 void mainMenu (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected, bool &running);
 void Client1 (BankAccount &account, map<int, BankAccount> *accounts);
 void Client2 (BankAccount &account, map<int, BankAccount> *accounts);
+void Client3 (BankAccount &account, map<int, BankAccount> *accounts);
 void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected);
 int randomBalance();
 
@@ -16,19 +17,34 @@ int randomBalance () {
     return random;
 }
 
-void Client1 (BankAccount &account, map<int, BankAccount> *accounts) {
+void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex &mtx) {
+    lock_guard<mutex> lock(mtx);
     cout << "Client 1 is running" << endl;
-    cin.ignore();
-    cin.get();
-    cout << "Current Balance: " << account.getBalance() << endl;
-    this_thread::sleep_for(chrono::milliseconds(500));
-    account.deposit(randomBalance() + 60);
-    cout << "Client 1 has deposited to account: " << account.getAccountNum() << setw(10) << " || " << "\tCurrent balance: " << account.getBalance() << endl;
-    this_thread::sleep_for(chrono::milliseconds(500));
-    account.withdraw(randomBalance() - 42);
-    cout << "Client 1 has withdrawn from account: " << account.getAccountNum() << setw(10) << " || " << "\tCurrent balance: " << account.getBalance() << endl << endl;
-    this_thread::sleep_for(chrono::milliseconds(500));
+    //cin.get();
+    cout << "Client 1 is depositing 500 from account " << account.getAccountNum() << endl << endl;
+    account.deposit(500);
+    Sleep(500);
 }
+
+void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &mtx) {
+    lock_guard<mutex> lock(mtx);
+    cout << "Client 2 is running" << endl;
+    //cin.get();
+    cout << "Client 2 is withdrawing 200 from account " << account.getAccountNum() << endl << endl;
+    account.withdraw(200);
+    Sleep(500);
+
+}
+
+void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &mtx) {
+    lock_guard<mutex> lock(mtx);
+    cout << "Client 3 is running" << endl;
+    //cin.get();
+    cout << "Client 3 is checking it's balance for account" << account.getAccountNum() << ": " << account.getBalance() << endl << endl;
+    Sleep(500);
+
+}
+
 void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected) {
     system("cls");
     cout << "Enter a bank account number to enter the banking system: " << endl;
