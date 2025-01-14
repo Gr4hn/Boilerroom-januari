@@ -57,5 +57,6 @@
         "variant": "cpp",
         "condition_variable": "cpp",
         "mutex": "cpp"
-    }
+    },
+    "github.copilot.editor.enableAutoCompletions": true
 }
