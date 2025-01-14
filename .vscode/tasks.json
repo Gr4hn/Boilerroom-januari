@@ -7,11 +7,18 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/main.cpp",
-/*                 "-I",
-                "${workspaceFolder}/def.h", */
+                "${workspaceFolder}/main/main.cpp",
+                "${workspaceFolder}/basics/basics.cpp",
+                "${workspaceFolder}/classes/classes.cpp",
+                "${workspaceFolder}/functions/functions.cpp",
+                "-I",
+                "${workspaceFolder}/basics",
+                "-I",
+                "${workspaceFolder}/classes",
+                "-I",
+                "${workspaceFolder}/functions",
                 "-o",
-                "${workspaceFolder}/main.exe"
+                "${workspaceFolder}/main/main.exe"
             ],
             "options": {
                 "cwd": "C:/msys64/ucrt64/bin"
