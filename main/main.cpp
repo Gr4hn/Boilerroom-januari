@@ -4,7 +4,7 @@
 
 using namespace std;
 
-mutex mtx;
+mutex mtx, funcMtx;
 
 int main() {
     map<int, BankAccount> accounts;
@@ -37,77 +37,42 @@ int main() {
 
 
     for (int i = 1; i < 11; i++) {
-    //lock_guard<mutex> lock(mtx);
-        accounts = AccSelection(mtx, &accounts);
-        for (const auto& [key, value] : accounts) {
+        BankAccount &account = AccSelection(mtx, &accounts);
+        cout << "Customer " << i + 1 << " is running" << endl;
+        //for (auto& [key, value] : accounts) {
             switch (i % 3) {
                 case 0:
-                    threads.push_back(thread(Client1, ref(value), &accounts, ref(mtx)));
+                    threads.push_back(thread(Client1, ref(account), &accounts, ref(funcMtx), ref(mtx)));
                     break;
                 case 1:
-                    threads.push_back(thread(Client2, ref(value), &accounts, ref(mtx)));
+                    threads.push_back(thread(Client2, ref(account), &accounts, ref(funcMtx), ref(mtx)));
                     break;
                 case 2:
-                    threads.push_back(thread(Client3, ref(value), &accounts, ref(mtx)));
+                    threads.push_back(thread(Client3, ref(account), &accounts, ref(funcMtx), ref(mtx)));
+                    break;
+                default:
+                    throw runtime_error("Invalid account selection!");
                     break;
             }
-        }
+        //}
+        Sleep(500);
     }
     
     
     for (auto& t : threads) {
         if (t.joinable()) {
             t.join();
-        }
+        } 
     }
     
-    // Thread 1
-    /* thread t1(Client1, ref(account1), &accounts, ref(mtx));
+    cout << "All threads have finished" << endl;
+    cout << "Final account balances: " << endl;
+    cout << "Account 111: " << accounts[111].getBalance(funcMtx) << endl;
+    cout << "Account 222: " << accounts[222].getBalance(funcMtx) << endl;
+    cout << "Account 333: " << accounts[333].getBalance(funcMtx) << endl;
+    cout << "Account 444: " << accounts[444].getBalance(funcMtx) << endl;
+    cout << "Account 555: " << accounts[555].getBalance(funcMtx) << endl;
 
-    // Thread 2
-    thread t2(Client2, ref(account5), &accounts, ref(mtx));
-
-    // Thread 3
-    thread t3(Client3, ref(account2), &accounts, ref(mtx));
-
-    // Thread 4
-    thread t4(Client2, ref(account4), &accounts, ref(mtx));
-
-    // Thread 5
-    thread t5(Client1, ref(account3), &accounts, ref(mtx));
-
-    // Thread 6
-    thread t6(Client3, ref(account4), &accounts, ref(mtx));
-
-    // Thread 7
-    thread t7(Client1, ref(account1), &accounts, ref(mtx));
-
-    // Thread 8
-    thread t8(Client2, ref(account5), &accounts, ref(mtx));
-
-    // Thread 9
-    thread t9(Client2, ref(account2), &accounts, ref(mtx));
-
-    // Thread 10
-    thread t10(Client3, ref(account3), &accounts, ref(mtx));
- */
- 
-/*    t1.join();
-    t2.join();
-    t3.join();
-    t4.join(); 
-    t5.join(); 
-    t6.join(); 
-    t7.join(); 
-    t8.join(); 
-    t9.join(); 
-    t10.join();  */
-    
-    cout << "Balance of account1: " << account1.getBalance() << endl;
-    cout << "Balance of account2: " << account2.getBalance() << endl;
-    cout << "Balance of account3: " << account3.getBalance() << endl;
-    cout << "Balance of account4: " << account4.getBalance() << endl;
-    cout << "Balance of account5: " << account5.getBalance() << endl;
     //cin.get();
     return 0;
 }

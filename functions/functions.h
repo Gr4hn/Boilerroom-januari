@@ -8,13 +8,13 @@ class BankManagement; // Forward declaration of BankManagement
 
 
 
-void mainMenu (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected, BankManagement bankManagement, bool &running);
-void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex &mtx);
-void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &mtx);
-void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &mtx);
-void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected);
+//void mainMenu (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected, BankManagement bankManagement, bool &running);
+void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx);
+void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx);
+void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx);
+//void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected);
 int randomBalance();
 int randomAccount ();
-map<int, BankAccount> AccSelection (mutex &mtx, map<int, BankAccount> *accounts);
+BankAccount& AccSelection (mutex &mtx, map<int, BankAccount> *accounts);
 
 #endif 

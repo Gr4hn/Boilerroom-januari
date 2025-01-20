@@ -24,19 +24,23 @@ class BankAccount {
         this->accountNum = accountNum;
     }
     
-    void deposit(int amount) {
+    void deposit(int amount, mutex &funcMtx) {
+        lock_guard<mutex> lock(funcMtx);
         balance += amount;
     }
 
-    void withdraw(int amount) {
+    void withdraw(int amount, mutex &funcMtx) {
+        lock_guard<mutex> lock(funcMtx);
         balance -= amount;
     }
 
-    int getBalance() {
+    int getBalance(mutex &funcMtx) {
+        lock_guard<mutex> lock(funcMtx);
         return balance;
     }
 
-    int getAccountNum() {
+    int getAccountNum(mutex &funcMtx) {
+        lock_guard<mutex> lock(funcMtx);
         return accountNum;
     }
 

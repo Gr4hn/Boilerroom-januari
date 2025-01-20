@@ -5,84 +5,82 @@
 
 
 
-void mainMenu (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected, bool &running);
-void Client1 (BankAccount &account, map<int, BankAccount> *accounts);
-void Client2 (BankAccount &account, map<int, BankAccount> *accounts);
-void Client3 (BankAccount &account, map<int, BankAccount> *accounts);
-void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected);
+//void mainMenu (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected, bool &running);
+void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex & funcMtx, mutex &mtx);
+void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex & funcMtx, mutex &mtx);
+void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex & funcMtx, mutex &mtx);
+//void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected);
 int randomAccount ();
-map<int, BankAccount> AccSelection (mutex &mtx, map<int, BankAccount> *accounts);
-
+//BankAccount& AccSelection (mutex &mtx, map<int, BankAccount> *accounts);
 int randomBalance();
 
 int randomBalance () {
-    srand(time(NULL));
-    int random = rand() % 1000 + 45;
-    return random;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(1, 5);
+    return dis(gen);
 }
 
 int randomAccount () {
-    srand(time(NULL));
-    int randomAcc = rand() % 5 + 1;
-    return randomAcc;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(1, 5);
+    return dis(gen);
 }
 
-map<int, BankAccount> AccSelection (mutex &mtx, map<int, BankAccount> *accounts) {
+BankAccount& AccSelection (mutex &mtx, map<int, BankAccount> *accounts) {
     lock_guard<mutex> lock(mtx);
     switch (randomAccount()) {
         case 1:
-            return accounts[111];
-            break;
+            return accounts->at(111);
         case 2:
-            return accounts[222];
-            break;
+            return accounts->at(222);
         case 3:
-            return accounts[333];
-            break;
+            return accounts->at(333);
         case 4:
-            return accounts[444];
-            break;
+            return accounts->at(444);
         case 5:
-            return accounts[555];
-            break;
+            return accounts->at(555);
         default:
             throw runtime_error("Invalid account selection!");
     }
 }
 
-void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex &mtx) { //deposit
+void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx) { //deposit
     lock_guard<mutex> lock(mtx);
-    AccSelection(mtx, accounts);
     cout << "Client 1 is running" << endl;
     //cin.get();
-    cout << "Customer " << this_thread::get_id() << " is depositing 500 from account " << account.getAccountNum() << endl << endl;
-    account.deposit(500);
+    cout << "Customer " << this_thread::get_id() << " is depositing 500 from account " << account.getAccountNum(funcMtx) << endl;
+    account.deposit(500, funcMtx);
+    cout << "Balance after deposit: " << account.getBalance(funcMtx) << endl << endl;
     Sleep(500);
 }
 
-void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &mtx) { //withdraw
+void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx) { //withdraw
     lock_guard<mutex> lock(mtx);
     cout << "Client 2 is running" << endl;
     //cin.get();
-    cout << "Customer " << this_thread::get_id() << " is withdrawing 200 from account " << account.getAccountNum() << endl << endl;
-    account.withdraw(200);
+    cout << "Customer " << this_thread::get_id() << " is withdrawing 200 from account " << account.getAccountNum(funcMtx) << endl;
+    account.withdraw(200, funcMtx);
+    cout << "Balance after withdrawal: " << account.getBalance(funcMtx) << endl << endl;
     Sleep(500);
+
 }
 
-void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &mtx) {  //check balance
+void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx) {  //check balance
     lock_guard<mutex> lock(mtx);
     cout << "Client 3 is running" << endl;
     //cin.get();
-    cout << "Customer " << this_thread::get_id() << " is checking it's balance for account" << account.getAccountNum() << ": " << account.getBalance() << endl << endl;
+    cout << "Customer " << this_thread::get_id() << " is checking it's balance for account" << account.getAccountNum(funcMtx) << ": " << account.getBalance(funcMtx) << endl << endl;
     Sleep(500);
 
 }
 
-void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected) {
+/* void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected) {
     system("cls");
     cout << "Enter a bank account number to enter the banking system: " << endl;
     for (auto &acc : *accounts) {
-        cout << "Account Number: " << acc.second.getAccountNum() << endl << "Balance: " << acc.second.getBalance() << endl << endl;
+        cout << "Account Number: " << acc.second.getAccountNum(funcMtx) << endl << "Balance: " << acc.second.getBalance() << endl << endl;
     }
     cout << "Enter a bank account number: ";
     int accountNum;
@@ -90,7 +88,7 @@ void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bo
     auto it = accounts->find(accountNum);
     if (it != accounts->end()) {
         account = it->second;
-        cout << "Account selected: " << account.getAccountNum() << endl;
+        cout << "Account selected: " << account.getAccountNum(funcMtx) << endl;
         accountSelected = true;
         Sleep(2000);
     } else {
@@ -167,4 +165,4 @@ void mainMenu (BankAccount &account, map<int, BankAccount> *accounts, bool &acco
     system("cls");
     cout << "Goodbye!" << endl;
     Sleep(2000);
-}
+} */
