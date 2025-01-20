@@ -17,7 +17,7 @@ int randomBalance();
 int randomBalance () {
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<> dis(1, 5);
+    uniform_int_distribution<> dis(10, 1000);
     return dis(gen);
 }
 
@@ -48,20 +48,24 @@ BankAccount& AccSelection (mutex &mtx, map<int, BankAccount> *accounts) {
 
 void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx) { //deposit
     lock_guard<mutex> lock(mtx);
+    int RB = randomBalance();
     cout << "Client 1 is running" << endl;
     //cin.get();
-    cout << "Customer " << this_thread::get_id() << " is depositing 500 from account " << account.getAccountNum(funcMtx) << endl;
-    account.deposit(500, funcMtx);
+    cout << "Customer " << this_thread::get_id() << " is depositing " << RB << " from account " << account.getAccountNum(funcMtx) << endl;
+    cout << "Balance before withdrawal: " << account.getBalance(funcMtx) << endl;
+    account.deposit(RB, funcMtx);
     cout << "Balance after deposit: " << account.getBalance(funcMtx) << endl << endl;
     Sleep(500);
 }
 
 void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx) { //withdraw
     lock_guard<mutex> lock(mtx);
+    int RB = randomBalance();
     cout << "Client 2 is running" << endl;
     //cin.get();
-    cout << "Customer " << this_thread::get_id() << " is withdrawing 200 from account " << account.getAccountNum(funcMtx) << endl;
-    account.withdraw(200, funcMtx);
+    cout << "Customer " << this_thread::get_id() << " is withdrawing " << RB << " from account " << account.getAccountNum(funcMtx) << endl;
+    cout << "Balance before withdrawal: " << account.getBalance(funcMtx) << endl;
+    account.withdraw(RB, funcMtx);
     cout << "Balance after withdrawal: " << account.getBalance(funcMtx) << endl << endl;
     Sleep(500);
 
