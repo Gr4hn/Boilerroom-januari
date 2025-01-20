@@ -14,5 +14,7 @@ void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &mtx)
 void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &mtx);
 void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected);
 int randomBalance();
+int randomAccount ();
+map<int, BankAccount> AccSelection (mutex &mtx, map<int, BankAccount> *accounts);
 
 #endif 

@@ -10,6 +10,8 @@
 #include <ctime>
 #include <iomanip>
 #include <windows.h>
+#include <atomic>
+#include <vector>
 
 using namespace std;
 
