@@ -23,7 +23,7 @@ int randomBalance () {
 int randomAccount () {
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<> dis(1, 5);
+    uniform_int_distribution<> dis(1, 2);
     return dis(gen);
 }
 
@@ -88,10 +88,9 @@ void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &func
             account.withdraw(RB);
             cout << "Exited withdraw" << endl;
         }
-
         account.logWithdraw(RB, account, funcMtx);
     }
-    
+
     cout << "Thread " << this_thread::get_id() << " completed." << endl;
     Sleep(500);
 }
@@ -103,10 +102,10 @@ void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &func
 
     cout << "Client 3 is running" << endl;
 
-    {
+/*     {
         lock_guard<mutex> funcLock(funcMtx);
         cout << "Customer " << this_thread::get_id() << " is checking its balance for account " << account.getAccountNum(funcMtx) << ": " << account.getBalance(funcMtx) << endl;
-    }
+    } */
     cout << "Thread " << this_thread::get_id() << " completed." << endl;
     Sleep(500);
 }

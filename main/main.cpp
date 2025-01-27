@@ -14,15 +14,15 @@ int main() {
 
     BankAccount account1(1000, 111);
     BankAccount account2(2000, 222);
-    BankAccount account3(3000, 333);
+/*     BankAccount account3(3000, 333);
     BankAccount account4(4000, 444);
-    BankAccount account5(5000, 555);
+    BankAccount account5(5000, 555); */
     
     accounts[111] = account1;
     accounts[222] = account2;
-    accounts[333] = account3; // Assign a unique key for account3
+  /*   accounts[333] = account3; 
     accounts[444] = account4;
-    accounts[555] = account5;
+    accounts[555] = account5; */
 
     
     cout << "Hello, World!" << endl << endl;
@@ -77,9 +77,9 @@ int main() {
     
     cout << "All threads have finished" << endl;
     cout << "Final account balances: " << endl;
-    cout << "Account 111: " << accounts[111].getTotalWithdrawals(funcMtx) << endl;
-    cout << "Account 111: " << accounts[111].getTotalDeposits(funcMtx) << endl;
-    cout << "Account 111: " << accounts[111].getBalance(funcMtx) << endl;
+    cout << "Account 111 total withdrawls: " << accounts[111].getTotalWithdrawals(funcMtx) << endl;
+    cout << "Account 111 total deposits: " << accounts[111].getTotalDeposits(funcMtx) << endl;
+    cout << "Account 111 total balance: " << accounts[111].getBalance(funcMtx) << endl;
     cout << "Account 222: " << accounts[222].getBalance(funcMtx) << endl;
     cout << "Account 333: " << accounts[333].getBalance(funcMtx) << endl;
     cout << "Account 444: " << accounts[444].getBalance(funcMtx) << endl;

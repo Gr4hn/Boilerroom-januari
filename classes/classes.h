@@ -22,6 +22,8 @@ class BankAccount {
     BankAccount(int balance, int accountNum) {
         this->balance = balance;
         this->accountNum = accountNum;
+        this->totalDeposits = 0;
+        this->totalWithdrawals = 0;
     }
     BankAccount(int accountNum) {
         this->balance = 0;
@@ -38,10 +40,16 @@ class BankAccount {
         //lock_guard<mutex> lock(funcMtx);
         cout << "Entered withdraw" << endl;
         balance -= amount;
+        getBalance();
+        getTotalWithdrawals();
     }
 
     int getBalance(mutex &funcMtx) {
         lock_guard<mutex> lock(funcMtx);
+        return balance;
+    }
+
+    int getBalance() {
         return balance;
     }
 
@@ -54,9 +62,15 @@ class BankAccount {
         lock_guard<mutex> lock(funcMtx);
         return totalDeposits;
     }
+    int getTotalDeposits() {
+        return totalDeposits;
+    }
 
     int getTotalWithdrawals(mutex &funcMtx) {
         lock_guard<mutex> lock(funcMtx);
+        return totalWithdrawals;
+    }
+     int getTotalWithdrawals() {
         return totalWithdrawals;
     }
 
@@ -64,10 +78,10 @@ class BankAccount {
         cout << "Entered logDeposit" << endl;
 
         //unique_lock<mutex> lock(funcMtx);
-        account.totalDeposits += RB;
+        totalDeposits += RB;
         ofstream logFile("Deposit.txt", ios::app);
         if (logFile.is_open()) {
-            logFile << "Deposit: " << RB << " to account " << account.getAccountNum(funcMtx) << endl << endl;
+            logFile << "Deposit: " << RB << " to account " << getAccountNum(funcMtx) << endl << endl;
             logFile.close();
         } else {
             cout << "Unable to open file" << endl;
@@ -78,10 +92,10 @@ class BankAccount {
         cout << "Entered logWithdraw" << endl;
 
         //unique_lock<mutex> lock(funcMtx);
-        account.totalWithdrawals += RB;
+        totalWithdrawals += RB;
         ofstream logFile("Withdraw.txt", ios::app);
         if (logFile.is_open()) {
-            logFile << "Withdrawal: " << RB << " to account " << account.getAccountNum(funcMtx) << endl << endl;
+            logFile << "Withdrawal: " << RB << " to account " << getAccountNum(funcMtx) << endl << endl;
             logFile.close();
         } else {
             cout << "Unable to open file" << endl;
