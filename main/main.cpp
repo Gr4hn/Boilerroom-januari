@@ -4,7 +4,10 @@
 
 using namespace std;
 
-mutex mtx, funcMtx;
+mutex mtx, funcMtx, testMtx;
+condition_variable cv;
+bool ready = false;
+
 
 int main() {
     map<int, BankAccount> accounts;
@@ -42,13 +45,13 @@ int main() {
         //for (auto& [key, value] : accounts) {
             switch (i % 3) {
                 case 0:
-                    threads.push_back(thread(Client1, ref(account), &accounts, ref(funcMtx), ref(mtx)));
+                    threads.push_back(thread(Client1, ref(account), &accounts, ref(funcMtx), ref(mtx), ref(cv), ref(ready)));
                     break;
                 case 1:
-                    threads.push_back(thread(Client2, ref(account), &accounts, ref(funcMtx), ref(mtx)));
+                    threads.push_back(thread(Client2, ref(account), &accounts, ref(funcMtx), ref(mtx), ref(testMtx), ref(cv), ref(ready)));
                     break;
                 case 2:
-                    threads.push_back(thread(Client3, ref(account), &accounts, ref(funcMtx), ref(mtx)));
+                    threads.push_back(thread(Client3, ref(account), &accounts, ref(funcMtx), ref(mtx), ref(cv), ref(ready)));
                     break;
                 default:
                     throw runtime_error("Invalid account selection!");
@@ -57,6 +60,13 @@ int main() {
         //}
         Sleep(500);
     }
+
+    {
+        lock_guard<mutex> lock(mtx);
+        ready = true;
+    }
+
+    cv.notify_all();
     
     
     for (auto& t : threads) {
@@ -67,11 +77,14 @@ int main() {
     
     cout << "All threads have finished" << endl;
     cout << "Final account balances: " << endl;
+    cout << "Account 111: " << accounts[111].getTotalWithdrawals(funcMtx) << endl;
+    cout << "Account 111: " << accounts[111].getTotalDeposits(funcMtx) << endl;
     cout << "Account 111: " << accounts[111].getBalance(funcMtx) << endl;
     cout << "Account 222: " << accounts[222].getBalance(funcMtx) << endl;
     cout << "Account 333: " << accounts[333].getBalance(funcMtx) << endl;
     cout << "Account 444: " << accounts[444].getBalance(funcMtx) << endl;
     cout << "Account 555: " << accounts[555].getBalance(funcMtx) << endl;
+
 
     //cin.get();
     return 0;

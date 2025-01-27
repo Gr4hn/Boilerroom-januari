@@ -4,11 +4,10 @@
 
 
 
-
 //void mainMenu (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected, bool &running);
-void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex & funcMtx, mutex &mtx);
-void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex & funcMtx, mutex &mtx);
-void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex & funcMtx, mutex &mtx);
+void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex & funcMtx, mutex &mtx, bool &ready, condition_variable &cv);
+void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex & funcMtx, mutex &mtx, mutex &testMtx, bool &ready, condition_variable &cv);
+void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex & funcMtx, mutex &mtx, condition_variable &cv, bool &ready);
 //void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected);
 int randomAccount ();
 //BankAccount& AccSelection (mutex &mtx, map<int, BankAccount> *accounts);
@@ -46,33 +45,45 @@ BankAccount& AccSelection (mutex &mtx, map<int, BankAccount> *accounts) {
     }
 }
 
-void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx) { //deposit
-    lock_guard<mutex> lock(mtx);
+void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, condition_variable &cv, bool &ready) { //deposit
+    unique_lock<mutex> lock(mtx);
+    cout << "Thread " << this_thread::get_id() << " waiting..." << endl;
+    cv.wait(lock, [&]{ return ready; });
+
     int RB = randomBalance();
     cout << "Client 1 is running" << endl;
     //cin.get();
-    cout << "Customer " << this_thread::get_id() << " is depositing " << RB << " from account " << account.getAccountNum(funcMtx) << endl;
-    cout << "Balance before withdrawal: " << account.getBalance(funcMtx) << endl;
+/*     cout << "Customer " << this_thread::get_id() << " is depositing " << RB << " from account " << account.getAccountNum(funcMtx) << endl;
+    cout << "Balance before depoist: " << account.getBalance(funcMtx) << endl;
     account.deposit(RB, funcMtx);
-    cout << "Balance after deposit: " << account.getBalance(funcMtx) << endl << endl;
+    cout << "Balance after deposit: " << account.getBalance(funcMtx) << endl << endl; */
+    account.deposit(RB, funcMtx);
+    account.logDepoist(RB, account, funcMtx);
     Sleep(500);
 }
 
-void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx) { //withdraw
-    lock_guard<mutex> lock(mtx);
+void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, mutex &testMtx, condition_variable &cv, bool &ready) { //withdraw
+    unique_lock<mutex> lock(mtx);
+    cout << "Thread " << this_thread::get_id() << " waiting..." << endl;
+    cv.wait(lock, [&]{ return ready; });
+
     int RB = randomBalance();
     cout << "Client 2 is running" << endl;
     //cin.get();
-    cout << "Customer " << this_thread::get_id() << " is withdrawing " << RB << " from account " << account.getAccountNum(funcMtx) << endl;
+/*     cout << "Customer " << this_thread::get_id() << " is withdrawing " << RB << " from account " << account.getAccountNum(funcMtx) << endl;
     cout << "Balance before withdrawal: " << account.getBalance(funcMtx) << endl;
     account.withdraw(RB, funcMtx);
-    cout << "Balance after withdrawal: " << account.getBalance(funcMtx) << endl << endl;
+    cout << "Balance after withdrawal: " << account.getBalance(funcMtx) << endl << endl; */
+    account.withdraw(RB, funcMtx);
+    account.logWithdraw(RB, account, funcMtx, testMtx);
     Sleep(500);
 
 }
 
-void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx) {  //check balance
-    lock_guard<mutex> lock(mtx);
+void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, condition_variable &cv, bool &ready) {  //check balance
+    unique_lock<mutex> lock(mtx);
+    cout << "Thread " << this_thread::get_id() << " waiting..." << endl;
+    cv.wait(lock, [&]{ return ready; });
     cout << "Client 3 is running" << endl;
     //cin.get();
     cout << "Customer " << this_thread::get_id() << " is checking it's balance for account" << account.getAccountNum(funcMtx) << ": " << account.getBalance(funcMtx) << endl << endl;

@@ -60,7 +60,8 @@
         "iomanip": "cpp",
         "chrono": "cpp",
         "cstdarg": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "fstream": "cpp"
     },
     "github.copilot.editor.enableAutoCompletions": true
 }

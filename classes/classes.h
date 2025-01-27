@@ -9,10 +9,14 @@ class BankAccount {
     private:
         int balance;
         int accountNum;
+        int totalDeposits;
+        int totalWithdrawals;
     public:
     BankAccount() {
         this->balance = balance;
         this->accountNum = accountNum;
+        this->totalDeposits = 0;
+        this->totalWithdrawals = 0;
     } // Har denna o göra med att map behöver en default constructor?
 
     BankAccount(int balance, int accountNum) {
@@ -42,6 +46,40 @@ class BankAccount {
     int getAccountNum(mutex &funcMtx) {
         lock_guard<mutex> lock(funcMtx);
         return accountNum;
+    }
+
+    int getTotalDeposits(mutex &funcMtx) {
+        lock_guard<mutex> lock(funcMtx);
+        return totalDeposits;
+    }
+
+    int getTotalWithdrawals(mutex &funcMtx) {
+        lock_guard<mutex> lock(funcMtx);
+        return totalWithdrawals;
+    }
+
+    void logDepoist (int &RB, BankAccount &account, mutex &funcMtx) {
+        unique_lock<mutex> lock(funcMtx);
+        account.totalDeposits += RB;
+        ofstream logFile("Deposit.txt", ios::app);
+        if (logFile.is_open()) {
+            logFile << "Deposit: " << RB << " to account " << account.getAccountNum(funcMtx) << endl << endl;
+            logFile.close();
+        } else {
+            cout << "Unable to open file" << endl;
+        }
+    }
+
+    void logWithdraw (int &RB, BankAccount &account, mutex &funcMtx, mutex &testMtx) {
+        unique_lock<mutex> lock(funcMtx);
+        account.totalWithdrawals += RB;
+        ofstream logFile("Withdraw.txt", ios::app);
+        if (logFile.is_open()) {
+            logFile << "Withdrawal: " << RB << " to account " << account.getAccountNum(funcMtx) << endl << endl;
+            logFile.close();
+        } else {
+            cout << "Unable to open file" << endl;
+        }
     }
 
 };

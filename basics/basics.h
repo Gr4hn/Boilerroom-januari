@@ -12,6 +12,8 @@
 #include <windows.h>
 #include <atomic>
 #include <vector>
+#include <fstream>
+#include <condition_variable>
 
 using namespace std;
 
