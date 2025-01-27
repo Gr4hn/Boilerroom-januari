@@ -45,7 +45,7 @@ int main() {
         //for (auto& [key, value] : accounts) {
             switch (i % 3) {
                 case 0:
-                    threads.push_back(thread(Client1, ref(account), &accounts, ref(funcMtx), ref(mtx), ref(cv), ref(ready)));
+                    threads.push_back(thread(Client1, ref(account), &accounts, ref(funcMtx), ref(mtx), ref(testMtx), ref(cv), ref(ready)));
                     break;
                 case 1:
                     threads.push_back(thread(Client2, ref(account), &accounts, ref(funcMtx), ref(mtx), ref(testMtx), ref(cv), ref(ready)));

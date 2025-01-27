@@ -28,13 +28,15 @@ class BankAccount {
         this->accountNum = accountNum;
     }
     
-    void deposit(int amount, mutex &funcMtx) {
-        lock_guard<mutex> lock(funcMtx);
+    void deposit(int amount) {
+        //lock_guard<mutex> lock(funcMtx);
+        cout << "Entered withdraw" << endl;
         balance += amount;
     }
 
-    void withdraw(int amount, mutex &funcMtx) {
-        lock_guard<mutex> lock(funcMtx);
+    void withdraw(int amount) {
+        //lock_guard<mutex> lock(funcMtx);
+        cout << "Entered withdraw" << endl;
         balance -= amount;
     }
 
@@ -59,7 +61,9 @@ class BankAccount {
     }
 
     void logDepoist (int &RB, BankAccount &account, mutex &funcMtx) {
-        unique_lock<mutex> lock(funcMtx);
+        cout << "Entered logDeposit" << endl;
+
+        //unique_lock<mutex> lock(funcMtx);
         account.totalDeposits += RB;
         ofstream logFile("Deposit.txt", ios::app);
         if (logFile.is_open()) {
@@ -70,8 +74,10 @@ class BankAccount {
         }
     }
 
-    void logWithdraw (int &RB, BankAccount &account, mutex &funcMtx, mutex &testMtx) {
-        unique_lock<mutex> lock(funcMtx);
+    void logWithdraw (int &RB, BankAccount &account, mutex &funcMtx) {
+        cout << "Entered logWithdraw" << endl;
+
+        //unique_lock<mutex> lock(funcMtx);
         account.totalWithdrawals += RB;
         ofstream logFile("Withdraw.txt", ios::app);
         if (logFile.is_open()) {
