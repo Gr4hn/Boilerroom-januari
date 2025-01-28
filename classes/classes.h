@@ -75,8 +75,6 @@ class BankAccount {
     }
 
     void logDepoist (int &RB, BankAccount &account, mutex &funcMtx) {
-        cout << "Entered logDeposit" << endl;
-
         //unique_lock<mutex> lock(funcMtx);
         totalDeposits += RB;
         ofstream logFile("Deposit.txt", ios::app);
@@ -89,8 +87,6 @@ class BankAccount {
     }
 
     void logWithdraw (int &RB, BankAccount &account, mutex &funcMtx) {
-        cout << "Entered logWithdraw" << endl;
-
         //unique_lock<mutex> lock(funcMtx);
         totalWithdrawals += RB;
         ofstream logFile("Withdraw.txt", ios::app);

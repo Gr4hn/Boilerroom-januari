@@ -7,7 +7,7 @@
 //void mainMenu (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected, bool &running);
 void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, mutex &testMtx, condition_variable &cv, bool &ready);
 void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, mutex &testMtx, condition_variable &cv, bool &ready);
-void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, condition_variable &cv, bool &ready);
+void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, condition_variable &cv, bool &ready, mutex &testMtx);
 //void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected);
 int randomAccount ();
 //BankAccount& AccSelection (mutex &mtx, map<int, BankAccount> *accounts);
@@ -23,7 +23,7 @@ int randomBalance () {
 int randomAccount () {
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<> dis(1, 2);
+    uniform_int_distribution<> dis(1, 5);
     return dis(gen);
 }
 
@@ -55,19 +55,14 @@ void Client1 (BankAccount &account, map<int, BankAccount> *accounts, mutex &func
 
     {
         lock_guard<mutex> testLock(testMtx);
-        cout << "Entered testLock" << endl;
-
         {
             lock_guard<mutex> funcLock(funcMtx);
-            cout << "Entered funcLock" << endl;
             account.deposit(RB);
-            cout << "Exited deposit" << endl;
         }
-
         account.logDepoist(RB, account, funcMtx);
     }
-    cout << "Thread " << this_thread::get_id() << " completed." << endl;
-    Sleep(500);
+
+    Sleep(1000);
 }
 
 void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, mutex &testMtx, condition_variable &cv, bool &ready) { //withdraw
@@ -80,34 +75,28 @@ void Client2 (BankAccount &account, map<int, BankAccount> *accounts, mutex &func
 
     {    
         lock_guard<mutex> testLock(testMtx);
-        cout << "Entered testLock" << endl;
         {
             lock_guard<mutex> funcLock(funcMtx);
-            cout << "Entered funcLock" << endl;
 
             account.withdraw(RB);
-            cout << "Exited withdraw" << endl;
         }
         account.logWithdraw(RB, account, funcMtx);
     }
-
-    cout << "Thread " << this_thread::get_id() << " completed." << endl;
-    Sleep(500);
+    Sleep(1000);
 }
 
-void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, condition_variable &cv, bool &ready) {  //check balance
+void Client3 (BankAccount &account, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, condition_variable &cv, bool &ready, mutex &testMtx) {  //check balance
     unique_lock<mutex> lock(mtx);
     cout << "Thread " << this_thread::get_id() << " waiting..." << endl;
     cv.wait(lock, [&]{ return ready; });
 
     cout << "Client 3 is running" << endl;
 
-/*     {
+    {
         lock_guard<mutex> funcLock(funcMtx);
-        cout << "Customer " << this_thread::get_id() << " is checking its balance for account " << account.getAccountNum(funcMtx) << ": " << account.getBalance(funcMtx) << endl;
-    } */
-    cout << "Thread " << this_thread::get_id() << " completed." << endl;
-    Sleep(500);
+        cout << "Customer " << this_thread::get_id() << " is checking its balance for account " << account.getAccountNum(testMtx) << ": " << account.getBalance(testMtx) << endl;
+    }
+    Sleep(1000);
 }
 
 /* void AccountSelection (BankAccount &account, map<int, BankAccount> *accounts, bool &accountSelected) {
