@@ -5,93 +5,87 @@
 
 using namespace std;
 
+// Class to handle bank accounts
 class BankAccount {
     private:
-        int balance;
-        int accountNum;
-        int totalDeposits;
-        int totalWithdrawals;
+        int balance;             // Bankaccount balance   
+        int accountNum;          // Bankaccount number
+        int totalDeposits;       // Total deposited amount
+        int totalWithdrawals;    //Total withdrawn amount
     public:
-    BankAccount() {
+    BankAccount() {              // Default constructor
         this->balance = balance;
         this->accountNum = accountNum;
         this->totalDeposits = 0;
         this->totalWithdrawals = 0;
-    } // Har denna o göra med att map behöver en default constructor?
-
+    } 
+    
+    // Constructor with balance and account number
     BankAccount(int balance, int accountNum) {
         this->balance = balance;
         this->accountNum = accountNum;
         this->totalDeposits = 0;
         this->totalWithdrawals = 0;
     }
+
+    // Constructor with only account number, balance set to 0
     BankAccount(int accountNum) {
         this->balance = 0;
         this->accountNum = accountNum;
     }
-    
+
+    // Function to deposit money into the account
     void deposit(int amount) {
-        //lock_guard<mutex> lock(funcMtx);
         cout << "Entered withdraw" << endl;
         balance += amount;
     }
 
+    // Function to withdraw money from the account
     void withdraw(int amount) {
-        //lock_guard<mutex> lock(funcMtx);
         cout << "Entered withdraw" << endl;
         balance -= amount;
         getBalance();
         getTotalWithdrawals();
     }
 
-    int getBalance(mutex &funcMtx) {
-        lock_guard<mutex> lock(funcMtx);
-        return balance;
-    }
-
+    // Returns the current balance
     int getBalance() {
         return balance;
     }
 
-    int getAccountNum(mutex &funcMtx) {
-        lock_guard<mutex> lock(funcMtx);
+    // Returns the account number
+    int getAccountNum() {
         return accountNum;
     }
 
-    int getTotalDeposits(mutex &funcMtx) {
-        lock_guard<mutex> lock(funcMtx);
-        return totalDeposits;
-    }
+    // Returns the total deposits
     int getTotalDeposits() {
         return totalDeposits;
     }
 
-    int getTotalWithdrawals(mutex &funcMtx) {
-        lock_guard<mutex> lock(funcMtx);
-        return totalWithdrawals;
-    }
-     int getTotalWithdrawals() {
+    // Returns the total withdrawals
+    int getTotalWithdrawals() {
         return totalWithdrawals;
     }
 
-    void logDepoist (int &RB, BankAccount &account, mutex &funcMtx) {
-        //unique_lock<mutex> lock(funcMtx);
+    // Logs a deposit to a file
+    void logDepoist (int &RB, BankAccount &CustomerID, mutex &funcMtx) {
         totalDeposits += RB;
         ofstream logFile("Deposit.txt", ios::app);
         if (logFile.is_open()) {
-            logFile << "Deposit: " << RB << " to account " << getAccountNum(funcMtx) << endl << endl;
+            logFile << "Deposit: " << RB << " to account " << getAccountNum() << endl << endl;
             logFile.close();
         } else {
             cout << "Unable to open file" << endl;
         }
     }
 
-    void logWithdraw (int &RB, BankAccount &account, mutex &funcMtx) {
-        //unique_lock<mutex> lock(funcMtx);
+    // Logs a withdrawal to a file
+    void logWithdraw (int &RB, BankAccount &CustomerID, mutex &funcMtx) {
         totalWithdrawals += RB;
         ofstream logFile("Withdraw.txt", ios::app);
         if (logFile.is_open()) {
-            logFile << "Withdrawal: " << RB << " to account " << getAccountNum(funcMtx) << endl << endl;
+            logFile << "Withdrawal: " << RB << " to account " << getAccountNum() << endl << endl;
             logFile.close();
         } else {
             cout << "Unable to open file" << endl;
@@ -100,13 +94,15 @@ class BankAccount {
 
 };
 
+// Class to manage multiple bank accounts   
 class BankManagement {
     private:
 
     public:
-    map<int, BankAccount> accounts;
-    map<int, BankAccount>::iterator it = accounts.begin();
+    map<int, BankAccount> accounts;      // A map storing bank accounts with account number as key
+    map<int, BankAccount>::iterator it = accounts.begin();    // Iterator to browse accounts
 
+    // Function to add a new bank account
     void addBankAccount (int AccountNuminput) {
         accounts[AccountNuminput] = BankAccount(AccountNuminput);
     }
