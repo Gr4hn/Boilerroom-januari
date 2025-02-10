@@ -10,6 +10,8 @@ bool ready = false;
 bool dataReady = false;
 
 
+int x;
+
 int main() {
     map<int, BankAccount> accounts;
     //Creates 5 acc with balance first and the key value is the acc number Ex, 111
