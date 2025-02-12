@@ -9,7 +9,7 @@ using namespace std;
 class BankAccount {
     private:
         int balance;             // Bankaccount balance   
-        int accountNum;          // Bankaccount number
+        int accountNum;   
         int totalDeposits;       // Total deposited amount
         int totalWithdrawals;    //Total withdrawn amount
     public:
@@ -18,6 +18,7 @@ class BankAccount {
         this->accountNum = accountNum;
         this->totalDeposits = 0;
         this->totalWithdrawals = 0;
+
     } 
     
     // Constructor with balance and account number
@@ -34,6 +35,9 @@ class BankAccount {
         this->accountNum = accountNum;
     }
 
+    ~BankAccount() {             // Destructor
+        cout << "Account " << accountNum << " has been deleted" << endl;
+    }
     // Function to deposit money into the account
     void deposit(int amount) {
         cout << "Entered withdraw" << endl;
@@ -41,9 +45,18 @@ class BankAccount {
     }
 
     // Function to withdraw money from the account
-    void withdraw(int amount) {
+    void withdraw(int amount, map<int, BankAccount> &accounts) {
         cout << "Entered withdraw" << endl;
         balance -= amount;
+        if (balance < 0) {
+            //accounts[accountNum].~BankAccount();
+            accounts.erase(accountNum);
+            cout << "Account " << accountNum << " has been deleted" << endl;
+            return;
+        }
+        else {
+            cout << "Withdrawal successful" << endl;
+        }   
         getBalance();
         getTotalWithdrawals();
     }
@@ -57,6 +70,7 @@ class BankAccount {
     int getAccountNum() {
         return accountNum;
     }
+
 
     // Returns the total deposits
     int getTotalDeposits() {

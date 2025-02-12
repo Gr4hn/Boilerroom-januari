@@ -13,29 +13,38 @@ bool dataReady = false;
 int main() {
     map<int, BankAccount> accounts;
     //Creates 5 acc with balance first and the key value is the acc number Ex, 111
-    BankAccount account1(1000, 111);
-    BankAccount account2(2000, 222);
-    BankAccount account3(3000, 333);
-    BankAccount account4(4000, 444);
-    BankAccount account5(5000, 555);
+    BankAccount account1(randomBalance(), randomAccountNum());
+    BankAccount account2(randomBalance(), randomAccountNum());
+/*     BankAccount account3(randomBalance(), randomAccountNum());
+    BankAccount account4(randomBalance(), randomAccountNum());
+    BankAccount account5(randomBalance(), randomAccountNum()); */
     //Connects each map acc to a specific acc
-    accounts[111] = account1;
-    accounts[222] = account2;
-    accounts[333] = account3; 
-    accounts[444] = account4;
-    accounts[555] = account5;
+    accounts[account1.getAccountNum()] = account1;
+    accounts[account2.getAccountNum()] = account2;
+
+    account1.withdraw(10000, accounts);
+    account2.withdraw(10, accounts);
 
     
-    cout << "Hello, World!" << endl << endl;
-    Sleep(2000);
-    system("cls");
+/*     accounts[account3.getAccountNum()] = account3; 
+    accounts[account4.getAccountNum()] = account4;
+    accounts[account5.getAccountNum()] = account5; */
 
-    BankAccount CustomerID;
+    
+   /*  cout << "Hello, World!" << endl << endl;
+    Sleep(2000);
+    system("cls"); */
+
+    account1.getAccountNum();
+
+    cin.get();
+
+    /* BankAccount CustomerID;
     BankManagement bankManagement;
-    vector<thread> threads;
+    vector<thread> threads; */
 
     //Gives every "Costumer" it's own task to do,  
-    for (int i = 0; i < 10; i++) {
+/*     for (int i = 0; i < 10; i++) {
         BankAccount &CustomerID = AccSelection(mtx, &accounts);
         cout << "Customer " << i + 1 << " is running" << endl;  
             switch (i % 3) {
@@ -54,13 +63,13 @@ int main() {
             }
         Sleep(500);
     }
-
-    {
+ */
+/*     {
         lock_guard<mutex> lock(mtx);
         ready = true;
-    }
+    } */
 
-    cv.notify_all();
+/*     cv.notify_all();
     
     for (auto& t : threads) {
         if (t.joinable()) {
@@ -88,7 +97,7 @@ int main() {
 
      << "Account 555 total withdrawls: " << accounts[555].getTotalWithdrawals() << endl
      << "Account 555 total deposits: " << accounts[555].getTotalDeposits() << endl
-     << "Account 555: " << accounts[555].getBalance() << endl << endl; 
+     << "Account 555: " << accounts[555].getBalance() << endl << endl;  */
 
 
     //cin.get();

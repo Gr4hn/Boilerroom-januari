@@ -8,7 +8,7 @@
 int randomBalance () {
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<> dis(10, 1000);
+    uniform_int_distribution<> dis(10, 9999);
     return dis(gen);
 }
 //Gets a random account which constumers uses for transaction or check balance
@@ -19,9 +19,16 @@ int randomAccount () {
     return dis(gen);
 }
 
+int randomAccountNum () {
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<> dis(1000, 9999);
+    return dis(gen);
+}
+
 // Selects a random BankAccount from the map in a thread-safe manner.
 // Locks the mutex and returns a random BankAccount reference from the map.
-BankAccount& AccSelection (mutex &mtx, map<int, BankAccount> *accounts) {
+/* BankAccount& AccSelection (mutex &mtx, map<int, BankAccount> *accounts) {
     lock_guard<mutex> lock(mtx);
     switch (randomAccount()) {
         case 1:
@@ -39,6 +46,7 @@ BankAccount& AccSelection (mutex &mtx, map<int, BankAccount> *accounts) {
             break;
     }
 }
+ */
 //Deposits money
 void Client1 (BankAccount &CustomerID, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, mutex &testMtx, condition_variable &cv, bool &ready) { //deposit
     unique_lock<mutex> lock(mtx);
@@ -73,7 +81,7 @@ void Client2 (BankAccount &CustomerID, map<int, BankAccount> *accounts, mutex &f
         {
             lock_guard<mutex> funcLock(funcMtx);
 
-            CustomerID.withdraw(RB);
+            CustomerID.withdraw(RB, *accounts);
         }
         CustomerID.logWithdraw(RB, CustomerID, funcMtx);
     }

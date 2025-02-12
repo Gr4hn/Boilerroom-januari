@@ -15,6 +15,7 @@ void Client2(BankAccount &CustomerID, map<int, BankAccount> *accounts, mutex &fu
 void Client3(BankAccount &CustomerID, map<int, BankAccount> *accounts, mutex &funcMtx, mutex &mtx, condition_variable &cv, bool &ready, mutex &testMtx);
 int randomBalance();
 int randomAccount();
+int randomAccountNum();
 BankAccount& AccSelection(mutex &mtx, map<int, BankAccount> *accounts);
 
 #endif 
